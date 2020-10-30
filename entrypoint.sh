@@ -40,14 +40,14 @@ echo "GCR_IMAGE_NAME = ${GCR_IMAGE_NAME}"
 echo "SERVICE_NAME = ${SERVICE_NAME}"
 echo "\n\n-----------------------------------------------------------------------------\n\n"
 
-echo "\nCreate GitHub Deployment for $BRANCH at https://github.com/$GITHUB_REPOSITORY ..."
+echo "\nCreate GitHub Deployment for $BRANCH ($GITHUB_SHA) at https://github.com/$GITHUB_REPOSITORY ..."
 curl \
   -v \
   -X POST \
   -H "Accept: application/vnd.github.v3+json" \
   -H "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/repos/$GITHUB_REPOSITORY/deployments \
-  -d "{\"ref\": \"$BRANCH\"}"
+  -d "{\"ref\": \"$GITHUB_SHA\", \"required_contexts\": [], \"environment\": \"$BRANCH\", \"transient_environment\": true}"
 
 # service key
 
