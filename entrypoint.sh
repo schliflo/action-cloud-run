@@ -12,7 +12,7 @@ if [ "$INPUT_WORKING_DIRECTORY" != "." ]; then
 fi
 
 if [ "$INPUT_CHECK_IF_CHANGED" ]; then
-    HAS_CHANGED=$(./gitdiff.sh ${INPUT_WORKING_DIRECTORY})
+    HAS_CHANGED=$(gitdiff.sh ${INPUT_WORKING_DIRECTORY})
 fi
 
 if [ $HAS_CHANGED = false ]; then
@@ -40,7 +40,7 @@ echo "GCR_IMAGE_NAME = ${GCR_IMAGE_NAME}"
 echo "SERVICE_NAME = ${SERVICE_NAME}"
 echo "\n\n-----------------------------------------------------------------------------\n\n"
 
-# create GitHub Deployment
+echo "\nCreate GitHub Deployment..."
 sh deployment-create.sh
 
 # service key
