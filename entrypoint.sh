@@ -40,6 +40,9 @@ echo "GCR_IMAGE_NAME = ${GCR_IMAGE_NAME}"
 echo "SERVICE_NAME = ${SERVICE_NAME}"
 echo "\n\n-----------------------------------------------------------------------------\n\n"
 
+# create GitHub Deployment
+sh deployment-create.sh
+
 # service key
 
 echo "$INPUT_KEY" | base64 --decode > "$HOME"/gcloud.json

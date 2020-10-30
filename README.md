@@ -21,7 +21,8 @@ In your actions workflow, somewhere after the checkout step insert this:
     region: [europe-west1]
     working_directory: [.]
     check_if_changed: [false]
-    env: []
+    env: 
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     # hooks (all optional)
     hook_begin: your/script.sh
     hook_vars_before: your/script.sh
