@@ -35,4 +35,4 @@ inputs:
     required: false
 runs:
   using: "docker"
-  image: "docker://schliflo/action-cloud-run:latest"
+  image: "docker://schliflo/action-cloud-run:feature_github-deployments"
