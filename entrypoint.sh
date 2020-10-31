@@ -41,7 +41,7 @@ echo "SERVICE_NAME = ${SERVICE_NAME}"
 echo "\n\n-----------------------------------------------------------------------------\n\n"
 
 echo "\nCreate GitHub Deployment for $BRANCH ($GITHUB_SHA) at https://github.com/$GITHUB_REPOSITORY ..."
-DEPLOY_CURL='curl -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/deployments'
+DEPLOY_CURL="curl -X POST -H \"Accept: application/vnd.github.v3+json\" -H \"Authorization: token $GITHUB_TOKEN\" https://api.github.com/repos/$GITHUB_REPOSITORY/deployments"
 DEPLOY_CREATE_JSON=$($DEPLOY_CURL -d "{\"ref\": \"$GITHUB_SHA\", \"required_contexts\": [], \"environment\": \"$BRANCH\", \"transient_environment\": true}")
 DEPLOY_ID=$(echo $DEPLOY_CREATE_JSON | grep "\/deployments\/" | grep "\"url\"" | sed -E 's/^.*\/deployments\/(.*)",$/\1/g')
 echo $DEPLOY_CREATE_JSON
