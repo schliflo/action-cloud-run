@@ -41,13 +41,14 @@ echo "SERVICE_NAME = ${SERVICE_NAME}"
 echo "\n\n-----------------------------------------------------------------------------\n\n"
 
 echo "\nCreate GitHub Deployment for $BRANCH ($GITHUB_SHA) at https://github.com/$GITHUB_REPOSITORY ..."
-curl \
-  -v \
-  -X POST \
-  -H "Accept: application/vnd.github.v3+json" \
-  -H "Authorization: token $GITHUB_TOKEN" \
-  https://api.github.com/repos/$GITHUB_REPOSITORY/deployments \
-  -d "{\"ref\": \"$GITHUB_SHA\", \"required_contexts\": [], \"environment\": \"$BRANCH\", \"transient_environment\": true}"
+DEPLOY_CURL='curl -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/deployments'
+DEPLOY_CREATE_JSON=$($DEPLOY_CURL -d "{\"ref\": \"$GITHUB_SHA\", \"required_contexts\": [], \"environment\": \"$BRANCH\", \"transient_environment\": true}")
+DEPLOY_ID=$(echo $DEPLOY_CREATE_JSON | grep "\/deployments\/" | grep "\"url\"" | sed -E 's/^.*\/deployments\/(.*)",$/\1/g')
+echo $DEPLOY_CREATE_JSON
+
+echo "\nUpdating GitHub Deployment $DEPLOY_ID..."
+DEPLOY_UPDATE_JSON=$($DEPLOY_CURL/$DEPLOY_ID/statuses -d "{\"state\": \"in_progress\", \"environment\": \"$BRANCH\"")
+echo $DEPLOY_UPDATE_JSON
 
 # service key
 
@@ -140,6 +141,10 @@ echo "##[set-output name=cloud_run_service_url;]$URL"
 if [ "$INPUT_HOOK_END" ]; then
   sh $INPUT_HOOK_END
 fi
+
+echo "\nUpdating GitHub Deployment $DEPLOY_ID..."
+DEPLOY_UPDATE_JSON=$($DEPLOY_CURL/$DEPLOY_ID/statuses -d "{\"state\": \"success\", \"environment\": \"$BRANCH\", \"environment_url\": \"$URL\"")
+echo $DEPLOY_UPDATE_JSON
 
 echo "\n\n-----------------------------------------------------------------------------\n\n"
 echo "Successfully deployed ${SERVICE_NAME} to ${URL}"
