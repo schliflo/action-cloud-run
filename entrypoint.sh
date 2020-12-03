@@ -35,30 +35,30 @@ if [ "$INPUT_HOOK_VARS_AFTER" ]; then
 fi
 
 echo -e "\n\n-----------------------------------------------------------------------------\n\n"
-echo -e "BRANCH = ${BRANCH}"
-echo -e "GCR_IMAGE_NAME = ${GCR_IMAGE_NAME}"
-echo -e "SERVICE_NAME = ${SERVICE_NAME}"
+echo "BRANCH = ${BRANCH}"
+echo "GCR_IMAGE_NAME = ${GCR_IMAGE_NAME}"
+echo "SERVICE_NAME = ${SERVICE_NAME}"
 echo -e "\n\n-----------------------------------------------------------------------------\n\n"
 
 echo -e "\nCreate GitHub Deployment for $BRANCH ($GITHUB_SHA) at https://github.com/$GITHUB_REPOSITORY ..."
 DEPLOY_API="https://api.github.com/repos/$GITHUB_REPOSITORY/deployments"
 DEPLOY_CURL_HEADERS="-H \"Accept: application/vnd.github.v3+json\" -H \"Accept: application/vnd.github.ant-man-preview+json\" -H \"Authorization: token $GITHUB_TOKEN\""
 DEPLOY_CURL="curl -d '{\"ref\": \"$GITHUB_SHA\", \"required_contexts\": [], \"environment\": \"$BRANCH\", \"transient_environment\": true}' ${DEPLOY_CURL_HEADERS} -X POST ${DEPLOY_API}"
-echo -e $DEPLOY_CURL
+echo "$DEPLOY_CURL"
 DEPLOY_CREATE_JSON=$(eval $DEPLOY_CURL)
-echo -e $DEPLOY_CREATE_JSON
-DEPLOY_ID=$(echo -e $DEPLOY_CREATE_JSON | grep "\/deployments\/" | grep "\"url\"" | sed -E 's/^.*\/deployments\/(.*)",$/\1/g')
+echo "$DEPLOY_CREATE_JSON"
+DEPLOY_ID=$(echo "$DEPLOY_CREATE_JSON" | grep "\/deployments\/" | grep "\"url\"" | sed -E 's/^.*\/deployments\/(.*)",$/\1/g')
 
 if [ -z "${DEPLOY_ID}" ]; then
-    echo -e "Something ent wrong while trying to get the deployment id" ;
+    echo "Something ent wrong while trying to get the deployment id" ;
     exit 1;
 fi
 
 echo -e "\nUpdating GitHub Deployment $DEPLOY_ID..."
 DEPLOY_CURL="curl -d '{\"state\": \"in_progress\", \"environment\": \"$BRANCH\"}' ${DEPLOY_CURL_HEADERS} -X POST ${DEPLOY_API}/$DEPLOY_ID/statuses"
-echo -e $DEPLOY_CURL
+echo "$DEPLOY_CURL"
 DEPLOY_UPDATE_JSON=$(eval $DEPLOY_CURL)
-echo -e $DEPLOY_UPDATE_JSON
+echo "$DEPLOY_UPDATE_JSON"
 
 # service key
 
@@ -154,11 +154,11 @@ fi
 
 echo -e "\nUpdating GitHub Deployment $DEPLOY_ID..."
 DEPLOY_CURL="curl -d '{\"state\": \"success\", \"environment\": \"$BRANCH\", \"environment_url\": \"$URL\"}' ${DEPLOY_CURL_HEADERS} -X POST ${DEPLOY_API}/$DEPLOY_ID/statuses"
-echo -e $DEPLOY_CURL
+echo "$DEPLOY_CURL"
 DEPLOY_UPDATE_JSON=$(eval $DEPLOY_CURL)
-echo -e $DEPLOY_UPDATE_JSON
+echo "$DEPLOY_UPDATE_JSON"
 
 echo -e "\n\n-----------------------------------------------------------------------------\n\n"
-echo -e "Successfully deployed ${SERVICE_NAME} to ${URL}"
+echo "Successfully deployed ${SERVICE_NAME} to ${URL}"
 echo -e "\n\n-----------------------------------------------------------------------------\n\n"
 
