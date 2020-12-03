@@ -43,7 +43,7 @@ echo "\n\n----------------------------------------------------------------------
 echo "\nCreate GitHub Deployment for $BRANCH ($GITHUB_SHA) at https://github.com/$GITHUB_REPOSITORY ..."
 DEPLOY_API="https://api.github.com/repos/$GITHUB_REPOSITORY/deployments"
 DEPLOY_CURL_HEADERS="-H \"Accept: application/vnd.github.v3+json\" -H \"Accept: application/vnd.github.ant-man-preview+json\" -H \"Authorization: token $GITHUB_TOKEN\""
-DEPLOY_CURL="curl -d '{\"ref\": \"$GITHUB_SHA\", \"required_contexts\": [], \"environment\": \"$BRANCH\", \"transient_environment\": true}' ${CURL_HEADERS} -X POST ${DEPLOY_API}"
+DEPLOY_CURL="curl -d '{\"ref\": \"$GITHUB_SHA\", \"required_contexts\": [], \"environment\": \"$BRANCH\", \"transient_environment\": true}' ${DEPLOY_CURL_HEADERS} -X POST ${DEPLOY_API}"
 echo $DEPLOY_CURL
 DEPLOY_CREATE_JSON=$(eval $DEPLOY_CURL)
 echo $DEPLOY_CREATE_JSON
@@ -55,7 +55,7 @@ if [ -z "${DEPLOY_ID}" ]; then
 fi
 
 echo "\nUpdating GitHub Deployment $DEPLOY_ID..."
-DEPLOY_CURL="curl -d '{\"state\": \"in_progress\", \"environment\": \"$BRANCH\"}' ${CURL_HEADERS} -X POST ${DEPLOY_API}/$DEPLOY_ID/statuses"
+DEPLOY_CURL="curl -d '{\"state\": \"in_progress\", \"environment\": \"$BRANCH\"}' ${DEPLOY_CURL_HEADERS} -X POST ${DEPLOY_API}/$DEPLOY_ID/statuses"
 echo $DEPLOY_CURL
 DEPLOY_UPDATE_JSON=$(eval $DEPLOY_CURL)
 echo $DEPLOY_UPDATE_JSON
@@ -153,7 +153,7 @@ if [ "$INPUT_HOOK_END" ]; then
 fi
 
 echo "\nUpdating GitHub Deployment $DEPLOY_ID..."
-DEPLOY_CURL="curl -d '{\"state\": \"success\", \"environment\": \"$BRANCH\", \"environment_url\": \"$URL\"}' ${CURL_HEADERS} -X POST ${DEPLOY_API}/$DEPLOY_ID/statuses"
+DEPLOY_CURL="curl -d '{\"state\": \"success\", \"environment\": \"$BRANCH\", \"environment_url\": \"$URL\"}' ${DEPLOY_CURL_HEADERS} -X POST ${DEPLOY_API}/$DEPLOY_ID/statuses"
 echo $DEPLOY_CURL
 DEPLOY_UPDATE_JSON=$(eval $DEPLOY_CURL)
 echo $DEPLOY_UPDATE_JSON
