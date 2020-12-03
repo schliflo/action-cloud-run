@@ -41,13 +41,16 @@ echo "SERVICE_NAME = ${SERVICE_NAME}"
 echo "\n\n-----------------------------------------------------------------------------\n\n"
 
 echo "\nCreate GitHub Deployment for $BRANCH ($GITHUB_SHA) at https://github.com/$GITHUB_REPOSITORY ..."
-DEPLOY_CURL="curl -X POST -H \"Accept: application/vnd.github.v3+json\" -H \"Authorization: token $GITHUB_TOKEN\" https://api.github.com/repos/$GITHUB_REPOSITORY/deployments"
-DEPLOY_CREATE_JSON=$($DEPLOY_CURL -d "{\"ref\": \"$GITHUB_SHA\", \"required_contexts\": [], \"environment\": \"$BRANCH\", \"transient_environment\": true}")
+DEPLOY_API="https://api.github.com/repos/$GITHUB_REPOSITORY/deployments"
+DEPLOY_CURL_HEADERS="-H \"Accept: application/vnd.github.v3+json\" -H \"Authorization: token $GITHUB_TOKEN\""
+DEPLOY_CURL="curl -d '{\"ref\": \"$GITHUB_SHA\", \"required_contexts\": [], \"environment\": \"$BRANCH\", \"transient_environment\": true}' ${CURL_HEADERS} -X POST ${GITHUB_API}"
+DEPLOY_CREATE_JSON=$(eval $DEPLOY_CURL)
 DEPLOY_ID=$(echo $DEPLOY_CREATE_JSON | grep "\/deployments\/" | grep "\"url\"" | sed -E 's/^.*\/deployments\/(.*)",$/\1/g')
 echo $DEPLOY_CREATE_JSON
 
 echo "\nUpdating GitHub Deployment $DEPLOY_ID..."
-DEPLOY_UPDATE_JSON=$($DEPLOY_CURL/$DEPLOY_ID/statuses -d "{\"state\": \"in_progress\", \"environment\": \"$BRANCH\"")
+DEPLOY_CURL="curl -d '{\"state\": \"in_progress\", \"environment\": \"$BRANCH\"' ${CURL_HEADERS} -X POST ${GITHUB_API}/$DEPLOY_ID/statuses"
+DEPLOY_UPDATE_JSON=$(eval $DEPLOY_CURL)
 echo $DEPLOY_UPDATE_JSON
 
 # service key
@@ -143,7 +146,8 @@ if [ "$INPUT_HOOK_END" ]; then
 fi
 
 echo "\nUpdating GitHub Deployment $DEPLOY_ID..."
-DEPLOY_UPDATE_JSON=$($DEPLOY_CURL/$DEPLOY_ID/statuses -d "{\"state\": \"success\", \"environment\": \"$BRANCH\", \"environment_url\": \"$URL\"")
+DEPLOY_CURL="curl -d '{\"state\": \"success\", \"environment\": \"$BRANCH\", \"environment_url\": \"$URL\"' ${CURL_HEADERS} -X POST ${GITHUB_API}/$DEPLOY_ID/statuses"
+DEPLOY_UPDATE_JSON=$(eval $DEPLOY_CURL)
 echo $DEPLOY_UPDATE_JSON
 
 echo "\n\n-----------------------------------------------------------------------------\n\n"
