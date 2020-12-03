@@ -49,10 +49,13 @@ DEPLOY_CREATE_JSON=$(eval $DEPLOY_CURL)
 echo $DEPLOY_CREATE_JSON
 DEPLOY_ID=$(echo $DEPLOY_CREATE_JSON | grep "\/deployments\/" | grep "\"url\"" | sed -E 's/^.*\/deployments\/(.*)",$/\1/g')
 
-[[ -z "$DEPLOY_ID" ]] && { echo "Something ent wrong while trying to get the deployment id" ; exit 1; }
+if [ -z "${DEPLOY_ID}" ]; then
+    echo "Something ent wrong while trying to get the deployment id" ;
+    exit 1;
+fi
 
 echo "\nUpdating GitHub Deployment $DEPLOY_ID..."
-DEPLOY_CURL="curl -d '{\"state\": \"in_progress\", \"environment\": \"$BRANCH\"' ${CURL_HEADERS} -X POST ${DEPLOY_API}/$DEPLOY_ID/statuses"
+DEPLOY_CURL="curl -d '{\"state\": \"in_progress\", \"environment\": \"$BRANCH\"}' ${CURL_HEADERS} -X POST ${DEPLOY_API}/$DEPLOY_ID/statuses"
 echo $DEPLOY_CURL
 DEPLOY_UPDATE_JSON=$(eval $DEPLOY_CURL)
 echo $DEPLOY_UPDATE_JSON
@@ -150,7 +153,7 @@ if [ "$INPUT_HOOK_END" ]; then
 fi
 
 echo "\nUpdating GitHub Deployment $DEPLOY_ID..."
-DEPLOY_CURL="curl -d '{\"state\": \"success\", \"environment\": \"$BRANCH\", \"environment_url\": \"$URL\"' ${CURL_HEADERS} -X POST ${DEPLOY_API}/$DEPLOY_ID/statuses"
+DEPLOY_CURL="curl -d '{\"state\": \"success\", \"environment\": \"$BRANCH\", \"environment_url\": \"$URL\"}' ${CURL_HEADERS} -X POST ${DEPLOY_API}/$DEPLOY_ID/statuses"
 echo $DEPLOY_CURL
 DEPLOY_UPDATE_JSON=$(eval $DEPLOY_CURL)
 echo $DEPLOY_UPDATE_JSON
