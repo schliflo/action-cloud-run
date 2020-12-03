@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ "$INPUT_HOOK_BEGIN" ]; then
   sh $INPUT_HOOK_BEGIN
