@@ -42,7 +42,7 @@ echo "\n\n----------------------------------------------------------------------
 
 echo "\nCreate GitHub Deployment for $BRANCH ($GITHUB_SHA) at https://github.com/$GITHUB_REPOSITORY ..."
 DEPLOY_API="https://api.github.com/repos/$GITHUB_REPOSITORY/deployments"
-DEPLOY_CURL_HEADERS="-H \"Accept: application/vnd.github.v3+json\" -H \"Authorization: token $GITHUB_TOKEN\""
+DEPLOY_CURL_HEADERS="-H \"Accept: application/vnd.github.v3+json\" -H \"Accept: application/vnd.github.ant-man-preview+json\" -H \"Authorization: token $GITHUB_TOKEN\""
 DEPLOY_CURL="curl -d '{\"ref\": \"$GITHUB_SHA\", \"required_contexts\": [], \"environment\": \"$BRANCH\", \"transient_environment\": true}' ${CURL_HEADERS} -X POST ${DEPLOY_API}"
 echo $DEPLOY_CURL
 DEPLOY_CREATE_JSON=$(eval $DEPLOY_CURL)
