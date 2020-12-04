@@ -2,7 +2,7 @@
 
 if [ "$GITHUB_TOKEN" ]; then
   DEPLOY_API="https://api.github.com/repos/$GITHUB_REPOSITORY/deployments"
-  DEPLOY_CURL_HEADERS="-H \"Accept: application/vnd.github.v3+json\" -H \"Accept: application/vnd.github.ant-man-preview+json\" -H \"Authorization: token $GITHUB_TOKEN\""
+  DEPLOY_CURL_HEADERS="-H \"Accept: application/vnd.github.v3+json\" -H \"Accept: application/vnd.github.flash-preview+json\" -H \"Accept: application/vnd.github.ant-man-preview+json\" -H \"Authorization: token $GITHUB_TOKEN\""
 
   case "$DEPLOY_ACTION" in
   create)
