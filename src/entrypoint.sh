@@ -32,10 +32,10 @@ echo "SERVICE_NAME = ${SERVICE_NAME}"
 echo -e "\n\n-----------------------------------------------------------------------------\n\n"
 
 DEPLOY_ACTION="create"
-. ./github-deployment.sh
+. /github-deployment.sh
 
 DEPLOY_ACTION="status_progress"
-. ./github-deployment.sh
+. /github-deployment.sh
 
 # service account key
 echo "$INPUT_KEY" | base64 --decode > "$HOME"/gcloud.json
@@ -112,7 +112,7 @@ if [ "$INPUT_HOOK_END" ]; then
 fi
 
 DEPLOY_ACTION="status_success"
-. ./github-deployment.sh
+. /github-deployment.sh
 
 echo -e "\n\n-----------------------------------------------------------------------------\n\n"
 echo "Successfully deployed ${SERVICE_NAME} to ${URL}"
