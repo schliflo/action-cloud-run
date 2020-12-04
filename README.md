@@ -9,7 +9,7 @@ Docker image
 In your actions workflow, somewhere after the checkout step insert this:
 
 ```yaml
-- name: Deploy service to Cloud Run
+- name: "Cloud Run: Deploy Service"
   uses: schliflo/action-cloud-run@2
   env:
     # if set github deployments will be used
@@ -51,7 +51,7 @@ gcloud service key with the following permissions:
 You can also delete the service after branch deletion:
 
 ```yaml
-- name: Deploy service to Cloud Run
+- name: "Cloud Run: Delete Service"
   uses: schliflo/action-cloud-run@2
   env: 
     # if set github deployments will be used

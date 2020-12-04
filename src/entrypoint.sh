@@ -61,7 +61,7 @@ if [ "$INPUT_ACTION" = "delete" ]; then
 
   gcloud run services delete ${SERVICE_NAME}
 
-  DEPLOY_ACTION="status_delete"
+  DEPLOY_ACTION="delete"
   . /github-deployment.sh
 
   echo -e "\n\n-----------------------------------------------------------------------------\n\n"
