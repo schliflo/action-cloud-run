@@ -112,7 +112,7 @@ fi
 echo -e "\nDeploy to cloud run..."
 gcloud run deploy ${SERVICE_NAME} \
   --image "$GCR_IMAGE_NAME:$GITHUB_SHA" \
-  ${INPUT_HOOK_DEPLOY_AFTER}
+  ${INPUT_DEPLOY_FLAGS}
 
 
 if [ "$INPUT_HOOK_DEPLOY_AFTER" ]; then
