@@ -1,5 +1,5 @@
 FROM google/cloud-sdk
 
-COPY entrypoint.sh /entrypoint.sh
+COPY src/ /
 
 ENTRYPOINT ["/entrypoint.sh"]
