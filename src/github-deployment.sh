@@ -2,27 +2,36 @@
 
 if [ "$GITHUB_TOKEN" ]; then
   DEPLOY_API="https://api.github.com/repos/$GITHUB_REPOSITORY/deployments"
-  DEPLOY_CURL_HEADERS="-H \"Accept: application/vnd.github.v3+json\" -H \"Accept: application/vnd.github.flash-preview+json\" -H \"Accept: application/vnd.github.ant-man-preview+json\" -H \"Authorization: token $GITHUB_TOKEN\""
+  CURL_HEADERS="-H \"Accept: application/vnd.github.v3+json\" -H \"Accept: application/vnd.github.flash-preview+json\" -H \"Accept: application/vnd.github.ant-man-preview+json\" -H \"Authorization: token $GITHUB_TOKEN\""
 
   case "$DEPLOY_ACTION" in
   create)
     echo -e "\nCreate GitHub Deployment for $BRANCH ($GITHUB_SHA) at https://github.com/$GITHUB_REPOSITORY ..."
-    DEPLOY_CURL="curl -d '{\"ref\": \"$GITHUB_SHA\", \"required_contexts\": [], \"environment\": \"$BRANCH\", \"transient_environment\": true}' ${DEPLOY_CURL_HEADERS} -X POST ${DEPLOY_API}"
+    CURL_COMMAND="curl -d '{\"ref\": \"$GITHUB_SHA\", \"required_contexts\": [], \"environment\": \"$BRANCH\", \"transient_environment\": true}' ${CURL_HEADERS} -X POST ${DEPLOY_API}"
     ;;
 
   status_progress)
     echo -e "\nUpdating GitHub Deployment $DEPLOY_ID..."
-    DEPLOY_CURL="curl -d '{\"state\": \"in_progress\", \"environment\": \"$BRANCH\"}' ${DEPLOY_CURL_HEADERS} -X POST ${DEPLOY_API}/$DEPLOY_ID/statuses"
+    CURL_COMMAND="curl -d '{\"state\": \"in_progress\", \"environment\": \"$BRANCH\"}' ${CURL_HEADERS} -X POST ${DEPLOY_API}/$DEPLOY_ID/statuses"
     ;;
 
   status_success)
     echo -e "\nUpdating GitHub Deployment $DEPLOY_ID..."
-    DEPLOY_CURL="curl -d '{\"state\": \"success\", \"environment\": \"$BRANCH\", \"environment_url\": \"$URL\"}' ${DEPLOY_CURL_HEADERS} -X POST ${DEPLOY_API}/$DEPLOY_ID/statuses"
+    CURL_COMMAND="curl -d '{\"state\": \"success\", \"environment\": \"$BRANCH\", \"environment_url\": \"$URL\"}' ${CURL_HEADERS} -X POST ${DEPLOY_API}/$DEPLOY_ID/statuses"
     ;;
 
   delete)
-    echo -e "\nDeleting GitHub Deployment $DEPLOY_ID..."
-    DEPLOY_CURL="curl ${DEPLOY_CURL_HEADERS} -X DELETE ${DEPLOY_API}/$DEPLOY_ID"
+    echo -e "\nDeleting GitHub Deployments for environment  $BRANCH..."
+
+    for id in $(curl $DEPLOY_API\?environment\=$BRANCH | jq ".[].id"); do
+      echo -e "\nSetting GitHub Deployment $id to inactive..."
+      CURL_COMMAND="curl -d '{\"state\": \"inactive\", \"environment\": \"$BRANCH\"}' ${CURL_HEADERS} -X POST ${DEPLOY_API}/$id/statuses"
+      . /curl-helper.sh
+
+      echo -e "\nDeleting GitHub Deployment $id..."
+      CURL_COMMAND="curl ${CURL_HEADERS} -X DELETE ${DEPLOY_API}/$id"
+      . /curl-helper.sh
+    done
     ;;
 
   *)
@@ -31,12 +40,12 @@ if [ "$GITHUB_TOKEN" ]; then
     ;;
   esac
 
-  echo "$DEPLOY_CURL"
-  DEPLOY_COMMAND_JSON=$(eval $DEPLOY_CURL)
-  echo "$DEPLOY_COMMAND_JSON"
+  if [ "$DEPLOY_ACTION" != "delete" ]; then
+      . /curl-helper.sh
+  fi
 
   if [ "$DEPLOY_ACTION" = "create" ]; then
-    DEPLOY_ID=$(echo "$DEPLOY_COMMAND_JSON" | grep "\/deployments\/" | grep "\"url\"" | sed -E 's/^.*\/deployments\/(.*)",$/\1/g')
+    DEPLOY_ID=$(echo "$CURL_COMMAND_JSON" | grep "\/deployments\/" | grep "\"url\"" | sed -E 's/^.*\/deployments\/(.*)",$/\1/g')
 
     if [ -z "${DEPLOY_ID}" ]; then
       echo "Something ent wrong while trying to get the deployment id"

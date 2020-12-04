@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "$CURL_COMMAND"
+CURL_COMMAND_JSON=$(eval $CURL_COMMAND)
+echo "$CURL_COMMAND_JSON"

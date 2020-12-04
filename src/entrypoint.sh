@@ -17,6 +17,7 @@ if [ "$INPUT_HOOK_VARS_BEFORE" ]; then
 fi
 
 BRANCH=$(echo $GITHUB_REF | rev | cut -f 1 -d / | rev)
+
 if [ "$INPUT_ACTION" = "delete" ]; then
   BRANCH=$(echo "$GITHUB_EVENT" | grep "\"ref\": " | sed -E 's/^.*\"ref\": \"(.*)",$/\1/g')
 
@@ -25,6 +26,7 @@ if [ "$INPUT_ACTION" = "delete" ]; then
       exit 1
     fi
 fi
+
 BRANCH_SAFE=$(echo $BRANCH | tr '[:upper:]' '[:lower:]' | sed 's/[_#]/-/g')
 REPO=$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')
 GCR_IMAGE_NAME=${INPUT_REGISTRY}/${INPUT_PROJECT}/${REPO}${IMAGE_POSTFIX}
@@ -74,7 +76,7 @@ if [ "$INPUT_ACTION" = "delete" ]; then
   . /github-deployment.sh
 
   echo -e "\n\n-----------------------------------------------------------------------------\n\n"
-  echo "Successfully deleted service ${SERVICE_NAME}"
+  echo "Successfully deleted service ${SERVICE_NAME} and deployments for environment ${BRANCH}"
   echo -e "\n\n-----------------------------------------------------------------------------\n\n"
 
   exit 0
