@@ -5,34 +5,64 @@ branding:
   icon: "upload-cloud"
   color: "blue"
 inputs:
-  check_if_changed:
-    description: "Set to true to check if working_directory has changes since the previous commit"
-    required: false
-    default: "false"
-  working_directory:
-    description: "Directory where the Dockerfile is to be found"
+  project:
+    description: "GCP project"
     required: true
-    default: "."
   service_name:
     description: "Cloud run service name"
     required: true
   key:
     description: "GCP service key with storage and run permissions"
     required: true
-  project:
-    description: "GCP project"
-    required: true
+  working_directory:
+    description: "Directory where the Dockerfile is to be found"
+    required: false
+    default: "."
   registry:
     description: "GCP Registry (e.g. 'eu.gcr.io')"
     required: false
     default: eu.gcr.io
-  region:
-    description: "GCP region"
+  deploy_flags:
+    description: "Additional flags for deploy command"
     required: false
-    default: europe-west1
-  env:
-    description: "File path to environment configuration"
+    default: "--region=europe-west1 --platform=managed --allow-unauthenticated --port=80"
+  hook_begin:
+    description: "hook_begin"
     required: false
+  hook_vars_before:
+    description: "hook_vars_before"
+    required: false
+  hook_vars_after:
+    description: "hook_vars_after"
+    required: false
+  hook_setup_before:
+    description: "hook_setup_before"
+    required: false
+  hook_setup_after:
+    description: "hook_setup_after"
+    required: false
+  hook_build_before:
+    description: "hook_build_before"
+    required: false
+  hook_build_after:
+    description: "hook_build_after"
+    required: false
+  hook_push_before:
+    description: "hook_push_before"
+    required: false
+  hook_push_after:
+    description: "hook_push_after"
+    required: false
+  hook_deploy_before:
+    description: "hook_deploy_before"
+    required: false
+  hook_deploy_after:
+    description: "hook_deploy_after"
+    required: false
+  hook_end:
+    description: "hook_end"
+    required: false
+
 runs:
   using: "docker"
   image: "docker://schliflo/action-cloud-run:feature_github-deployments"

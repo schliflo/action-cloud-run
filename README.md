@@ -12,17 +12,17 @@ In your actions workflow, somewhere after the checkout step insert this:
 - name: Deploy service to Cloud Run
   uses: schliflo/action-cloud-run@1.2.0
   env: 
+    # if set github deployments will be used
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   with:
     # required
-    project: [your-project-id]
-    service_name: [your-service-name]
+    project: your-project-id
+    service_name: your-service-name
     key: ${{ secrets.GCP_CLOUD_RUN_SERVICE_KEY }}
     # optional
-    registry: [eu.gcr.io]
-    region: [europe-west1]
-    working_directory: [.]
-    check_if_changed: [false]
+    registry: eu.gcr.io
+    working_directory: .
+    deploy_flags: '--region=europe-west1 --platform=managed --allow-unauthenticated --port=80'
     # hooks (all optional)
     hook_begin: your/script.sh
     hook_vars_before: your/script.sh
