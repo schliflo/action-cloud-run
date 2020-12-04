@@ -56,6 +56,7 @@ You can also delete the service after branch deletion:
   env: 
     # if set github deployments will be used
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    GITHUB_EVENT: ${{ toJson(github.event) }}
   with:
     # required
     project: your-project-id

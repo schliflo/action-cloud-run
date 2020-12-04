@@ -17,19 +17,28 @@ if [ "$INPUT_HOOK_VARS_BEFORE" ]; then
 fi
 
 BRANCH=$(echo $GITHUB_REF | rev | cut -f 1 -d / | rev)
+if [ "$INPUT_ACTION" = "delete" ]; then
+  BRANCH=$(echo "$GITHUB_EVENT" | grep "\"ref\": " | sed -E 's/^.*\"ref\": \"(.*)",$/\1/g')
+
+    if [ -z "${BRANCH}" ]; then
+      echo "Something ent wrong while trying to get the deleted branch/tag"
+      exit 1
+    fi
+fi
+BRANCH_SAFE=$(echo $BRANCH | tr '[:upper:]' '[:lower:]' | sed 's/[_#]/-/g')
 REPO=$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')
 GCR_IMAGE_NAME=${INPUT_REGISTRY}/${INPUT_PROJECT}/${REPO}${IMAGE_POSTFIX}
-SERVICE_NAME=$(echo "${INPUT_SERVICE_NAME}--${BRANCH}" | tr '[:upper:]' '[:lower:]' | sed 's/[_]/-/g')
+SERVICE_NAME=$(echo "${INPUT_SERVICE_NAME}--${BRANCH_SAFE}")
 
 if [ "$INPUT_HOOK_VARS_AFTER" ]; then
   sh $INPUT_HOOK_VARS_AFTER
 fi
 
 echo -e "\n\n-----------------------------------------------------------------------------\n\n"
-echo "ACTION = ${INPUT_ACTION}"
-echo "BRANCH = ${BRANCH}"
-echo "GCR_IMAGE_NAME = ${GCR_IMAGE_NAME}"
-echo "SERVICE_NAME = ${SERVICE_NAME}"
+echo "ACTION:         ${INPUT_ACTION}"
+echo "BRANCH:         ${BRANCH}"
+echo "GCR_IMAGE_NAME: ${GCR_IMAGE_NAME}"
+echo "SERVICE_NAME:   ${SERVICE_NAME}"
 echo -e "\n\n-----------------------------------------------------------------------------\n\n"
 
 # service account key
@@ -87,7 +96,7 @@ fi
 echo -e "\nBuild image..."
 docker build \
   -t ${GCR_IMAGE_NAME}:${GITHUB_SHA} \
-  -t ${GCR_IMAGE_NAME}:${BRANCH} \
+  -t ${GCR_IMAGE_NAME}:${BRANCH_SAFE} \
   --build-arg IMAGE_NAME=${GCR_IMAGE_NAME} \
   --build-arg BRANCH_NAME=${BRANCH} \
   .
