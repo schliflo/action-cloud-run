@@ -26,6 +26,7 @@ if [ "$INPUT_HOOK_VARS_AFTER" ]; then
 fi
 
 echo -e "\n\n-----------------------------------------------------------------------------\n\n"
+echo "ACTION = ${INPUT_ACTION}"
 echo "BRANCH = ${BRANCH}"
 echo "GCR_IMAGE_NAME = ${GCR_IMAGE_NAME}"
 echo "SERVICE_NAME = ${SERVICE_NAME}"
