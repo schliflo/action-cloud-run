@@ -20,12 +20,13 @@ if [ "$GITHUB_TOKEN" ]; then
     DEPLOY_CURL="curl -d '{\"state\": \"success\", \"environment\": \"$BRANCH\", \"environment_url\": \"$URL\"}' ${DEPLOY_CURL_HEADERS} -X POST ${DEPLOY_API}/$DEPLOY_ID/statuses"
     ;;
 
-  destroy)
-    echo -e "\nDestroying GitHub Deployment $DEPLOY_ID..."
+  delete)
+    echo -e "\nDeleting GitHub Deployment $DEPLOY_ID..."
+    DEPLOY_CURL="curl ${DEPLOY_CURL_HEADERS} -X DELETE ${DEPLOY_API}/$DEPLOY_ID"
     ;;
 
   *)
-    echo $"Error: \$DEPLOY_ACTION has to be one of: {create|status_progress|status_success|destroy}"
+    echo $"Error: \$DEPLOY_ACTION has to be one of: {create|status_progress|status_success|delete}"
     exit 1
     ;;
   esac

@@ -10,8 +10,8 @@ In your actions workflow, somewhere after the checkout step insert this:
 
 ```yaml
 - name: Deploy service to Cloud Run
-  uses: schliflo/action-cloud-run@1.2.0
-  env: 
+  uses: schliflo/action-cloud-run@2
+  env:
     # if set github deployments will be used
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   with:
@@ -19,10 +19,13 @@ In your actions workflow, somewhere after the checkout step insert this:
     project: your-project-id
     service_name: your-service-name
     key: ${{ secrets.GCP_CLOUD_RUN_SERVICE_KEY }}
-    # optional
+    # optional settings
+    action: 'deploy'
     registry: eu.gcr.io
+    region: europe-west1
+    platform: managed
     working_directory: .
-    deploy_flags: '--region=europe-west1 --platform=managed --allow-unauthenticated --port=80'
+    deploy_flags: '--allow-unauthenticated --port=80'
     # hooks (all optional)
     hook_begin: your/script.sh
     hook_vars_before: your/script.sh
@@ -44,3 +47,22 @@ gcloud service key with the following permissions:
 - Service Account User
 - Cloud Run Admin
 - Storage Admin
+
+You can also delete the service after branch deletion:
+
+```yaml
+- name: Deploy service to Cloud Run
+  uses: schliflo/action-cloud-run@2
+  env: 
+    # if set github deployments will be used
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    # required
+    project: your-project-id
+    service_name: your-service-name
+    key: ${{ secrets.GCP_CLOUD_RUN_SERVICE_KEY }}
+    # optional settings
+    action: 'delete'
+    # all the other from above settings still apply
+    # ...
+```

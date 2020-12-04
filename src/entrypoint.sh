@@ -31,12 +31,6 @@ echo "GCR_IMAGE_NAME = ${GCR_IMAGE_NAME}"
 echo "SERVICE_NAME = ${SERVICE_NAME}"
 echo -e "\n\n-----------------------------------------------------------------------------\n\n"
 
-DEPLOY_ACTION="create"
-. /github-deployment.sh
-
-DEPLOY_ACTION="status_progress"
-. /github-deployment.sh
-
 # service account key
 echo "$INPUT_KEY" | base64 --decode > "$HOME"/gcloud.json
 
@@ -52,6 +46,29 @@ gcloud auth activate-service-account \
 echo -e "\nConfigure gcloud cli..."
 gcloud config set disable_prompts true
 gcloud config set project "${INPUT_PROJECT}"
+gcloud config set run/region "${INPUT_REGION}"
+gcloud config set run/platform "${INPUT_PLATFORM}"
+
+DEPLOY_ACTION="create"
+. /github-deployment.sh
+
+DEPLOY_ACTION="status_progress"
+. /github-deployment.sh
+
+if [ "$INPUT_ACTION" = "delete" ]; then
+  echo -e "\nDeleting service ${SERVICE_NAME}..."
+
+  gcloud run services delete ${SERVICE_NAME}
+
+  DEPLOY_ACTION="status_delete"
+  . /github-deployment.sh
+
+  echo -e "\n\n-----------------------------------------------------------------------------\n\n"
+  echo "Successfully deleted service ${SERVICE_NAME}"
+  echo -e "\n\n-----------------------------------------------------------------------------\n\n"
+
+  exit 0
+fi
 
 echo -e "\nConfigure docker..."
 gcloud auth configure-docker --quiet
@@ -117,4 +134,3 @@ DEPLOY_ACTION="status_success"
 echo -e "\n\n-----------------------------------------------------------------------------\n\n"
 echo "Successfully deployed ${SERVICE_NAME} to ${URL}"
 echo -e "\n\n-----------------------------------------------------------------------------\n\n"
-

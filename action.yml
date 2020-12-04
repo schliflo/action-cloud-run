@@ -14,14 +14,26 @@ inputs:
   key:
     description: "GCP service key with storage and run permissions"
     required: true
-  working_directory:
-    description: "Directory where the Dockerfile is to be found"
+  action:
+    description: "Action to be executed ('deploy' or 'delete')"
     required: false
-    default: "."
+    default: "deploy"
   registry:
     description: "GCP Registry (e.g. 'eu.gcr.io')"
     required: false
     default: eu.gcr.io
+  region:
+    description: "GCP Region"
+    required: false
+    default: europe-west1
+  platform:
+    description: "GCP Cloud Run Platform"
+    required: false
+    default: managed
+  working_directory:
+    description: "Directory where the Dockerfile is to be found"
+    required: false
+    default: "."
   deploy_flags:
     description: "Additional flags for deploy command"
     required: false
