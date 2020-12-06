@@ -1,7 +1,9 @@
 #!/bin/bash
 
+set +e
+
 if [ "$GITHUB_TOKEN" ]; then
-  DEPLOY_API="https://api.github.com/repos/$GITHUB_REPOSITORY/deployments"
+  DEPLOY_API="$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/deployments"
   CURL_HEADERS="-H \"Accept: application/vnd.github.v3+json\" -H \"Accept: application/vnd.github.flash-preview+json\" -H \"Accept: application/vnd.github.ant-man-preview+json\" -H \"Authorization: token $GITHUB_TOKEN\""
 
   case "$DEPLOY_ACTION" in
@@ -53,3 +55,5 @@ if [ "$GITHUB_TOKEN" ]; then
     fi
   fi
 fi
+
+set -e

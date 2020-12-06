@@ -16,10 +16,10 @@ if [ "$INPUT_HOOK_VARS_BEFORE" ]; then
   sh $INPUT_HOOK_VARS_BEFORE
 fi
 
-BRANCH=$(echo $GITHUB_REF | rev | cut -f 1 -d / | rev)
+BRANCH=$(echo $GITHUB_REF | sed -E 's/^refs\/[^\/]+\/(.*)/\1/g')
 
 if [ "$INPUT_ACTION" = "delete" ]; then
-  BRANCH=$(echo "$GITHUB_EVENT" | grep "\"ref\": " | sed -E 's/^.*\"ref\": \"(.*)",$/\1/g')
+  BRANCH=$(cat "$GITHUB_EVENT_PATH" | grep "\"ref\": " | sed -E 's/^.*\"ref\": \"(.*)",$/\1/g')
 
     if [ -z "${BRANCH}" ]; then
       echo "Something ent wrong while trying to get the deleted branch/tag"
@@ -61,26 +61,26 @@ gcloud config set project "${INPUT_PROJECT}"
 gcloud config set run/region "${INPUT_REGION}"
 gcloud config set run/platform "${INPUT_PLATFORM}"
 
-DEPLOY_ACTION="create"
-. /github-deployment.sh
-
-DEPLOY_ACTION="status_progress"
-. /github-deployment.sh
-
 if [ "$INPUT_ACTION" = "delete" ]; then
-  echo -e "\nDeleting service ${SERVICE_NAME}..."
+  echo -e "\nTrying to delete the service ${SERVICE_NAME}..."
 
-  gcloud run services delete ${SERVICE_NAME}
+  gcloud run services delete ${SERVICE_NAME} || :
 
   DEPLOY_ACTION="delete"
   . /github-deployment.sh
 
   echo -e "\n\n-----------------------------------------------------------------------------\n\n"
-  echo "Successfully deleted service ${SERVICE_NAME} and deployments for environment ${BRANCH}"
+  echo "Successfully cleaned up service ${SERVICE_NAME} and deployments for environment ${BRANCH}"
   echo -e "\n\n-----------------------------------------------------------------------------\n\n"
 
   exit 0
 fi
+
+DEPLOY_ACTION="create"
+. /github-deployment.sh
+
+DEPLOY_ACTION="status_progress"
+. /github-deployment.sh
 
 echo -e "\nConfigure docker..."
 gcloud auth configure-docker --quiet
