@@ -1,8 +1,13 @@
 # Github Action for Google Cloud Run branch deployments
 
 Authenticate with gcloud, build and push image to GCR and deploy as a new revision or branch preview to Cloud Run.
-Uses GitHub Deployments and environments to show active Instances.
-Sets `cloud_run_service_url` with the URL of your service as output.
+
+## Features
+
+- Sets `cloud_run_service_url` with the URL of your service as output.
+- Optionally uses GitHub Deployments and environments to show active Instances:
+  ![Pull Requests](https://github.com/schliflo/action-cloud-run/blob/master/img/pr.png?raw=true)
+  ![Environments](https://github.com/schliflo/action-cloud-run/blob/master/env.png?raw=true)
 
 ## Usage
 
