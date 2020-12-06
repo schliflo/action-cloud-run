@@ -27,7 +27,7 @@ if [ "$INPUT_ACTION" = "delete" ]; then
     fi
 fi
 
-BRANCH_SAFE=$(echo $BRANCH | tr '[:upper:]' '[:lower:]' | sed 's/[_#]/-/g')
+BRANCH_SAFE=$(echo $BRANCH | tr '[:upper:]' '[:lower:]' | sed 's/[_\/#]/-/g')
 REPO=$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')
 GCR_IMAGE_NAME=${INPUT_REGISTRY}/${INPUT_PROJECT}/${REPO}${IMAGE_POSTFIX}
 SERVICE_NAME=$(echo "${INPUT_SERVICE_NAME}--${BRANCH_SAFE}")
