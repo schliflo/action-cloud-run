@@ -75,6 +75,16 @@ inputs:
     description: "hook_end"
     required: false
 
+outputs:
+  cloud_run_service_url:
+    description: "URL of the deployed service"
+  cloud_run_image:
+    description: "Name of the built image"
+  cloud_run_image_sha:
+    description: "Name of the built image with commit sha as tag"
+  cloud_run_image_branch:
+    description: "Name of the built image with branch name as tag"
+
 runs:
   using: "docker"
   image: "docker://schliflo/action-cloud-run:2.0.0"

@@ -134,7 +134,7 @@ fi
 
 echo -e "\nGet deployment URL"
 URL=$(gcloud run services describe ${SERVICE_NAME} | grep Traffic | sed 's/Traffic: //')
-echo "##[set-output name=cloud_run_service_url;]$URL"
+echo "::set-output name=cloud_run_service_url::$URL"
 echo "::set-output name=cloud_run_image::$GCR_IMAGE_NAME"
 echo "::set-output name=cloud_run_image_sha::$GCR_IMAGE_NAME:$GITHUB_SHA"
 echo "::set-output name=cloud_run_image_branch::$GCR_IMAGE_NAME:$BRANCH_SAFE"
