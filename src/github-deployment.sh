@@ -4,7 +4,7 @@ set +e
 
 if [ "$GITHUB_TOKEN" ]; then
   DEPLOY_API="$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/deployments"
-  CURL_HEADERS="-H \"Accept: application/vnd.github.v3+json\" -H \"Accept: application/vnd.github.flash-preview+json\" -H \"Accept: application/vnd.github.ant-man-preview+json\" -H \"Authorization: token $GITHUB_TOKEN\""
+  CURL_HEADERS="-H \"Accept: application/vnd.github.v3+json\" -H \"Authorization: token $GITHUB_TOKEN\""
 
   case "$DEPLOY_ACTION" in
   create)

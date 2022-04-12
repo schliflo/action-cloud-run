@@ -133,7 +133,9 @@ if [ "$INPUT_HOOK_DEPLOY_AFTER" ]; then
 fi
 
 echo -e "\nGet deployment URL"
-URL=$(gcloud run services describe ${SERVICE_NAME} | grep Traffic | sed 's/Traffic: //')
+DATA_JSON=$(gcloud run services describe ${SERVICE_NAME} --format=json)
+URL=$(echo $DATA_JSON | jq --raw-output .status.url)
+echo "::set-output name=cloud_run_service_data_json::$DATA_JSON"
 echo "::set-output name=cloud_run_service_url::$URL"
 echo "::set-output name=cloud_run_image::$GCR_IMAGE_NAME"
 echo "::set-output name=cloud_run_image_sha::$GCR_IMAGE_NAME:$GITHUB_SHA"
