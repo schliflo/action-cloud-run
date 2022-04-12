@@ -25,7 +25,7 @@ if [ "$GITHUB_TOKEN" ]; then
   delete)
     echo -e "\nDeleting GitHub Deployments for environment  $BRANCH..."
 
-    CURL_COMMAND="$DEPLOY_API\?environment\=$BRANCH"
+    CURL_COMMAND="curl ${CURL_HEADERS} $DEPLOY_API\?environment\=$BRANCH"
     . /curl-helper.sh
 
     for id in $(echo $CURL_COMMAND_JSON | jq ".[].id"); do
