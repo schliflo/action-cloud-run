@@ -25,7 +25,10 @@ if [ "$GITHUB_TOKEN" ]; then
   delete)
     echo -e "\nDeleting GitHub Deployments for environment  $BRANCH..."
 
-    for id in $(curl $DEPLOY_API\?environment\=$BRANCH | jq ".[].id"); do
+    CURL_COMMAND="$DEPLOY_API\?environment\=$BRANCH"
+    . /curl-helper.sh
+
+    for id in $(echo $CURL_COMMAND_JSON | jq ".[].id"); do
       echo -e "\nSetting GitHub Deployment $id to inactive..."
       CURL_COMMAND="curl -d '{\"state\": \"inactive\", \"environment\": \"$BRANCH\"}' ${CURL_HEADERS} -X POST ${DEPLOY_API}/$id/statuses"
       . /curl-helper.sh
