@@ -1,13 +1,9 @@
-FROM google/cloud-sdk
+FROM google/cloud-sdk:alpine
 
-RUN DEBIAN_FRONTEND=noninteractive \
-    apt-get update \
-    && apt-get install --no-install-recommends -y \
+RUN apk add --no-cache \
     jq \
-    && apt-get autoremove -y \
-    && apt-get autoclean \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && gcloud components install \
+    docker-credential-gcr
 
 COPY src/ /
 
