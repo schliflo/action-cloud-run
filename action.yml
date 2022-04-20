@@ -87,4 +87,4 @@ outputs:
 
 runs:
   using: "docker"
-  image: "docker://schliflo/action-cloud-run:2.4.0"
+  image: "docker://ghcr.io/schliflo/action-cloud-run:2.4.0"
