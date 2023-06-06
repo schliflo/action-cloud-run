@@ -101,6 +101,8 @@ docker build \
   -t ${GCR_IMAGE_NAME}:${BRANCH_SAFE} \
   --build-arg IMAGE_NAME=${GCR_IMAGE_NAME} \
   --build-arg BRANCH_NAME=${BRANCH} \
+  --build-arg REF_NAME=${GITHUB_REF_NAME} \
+  --build-arg COMMIT_SHA=${GITHUB_SHA} \
   .
 
 if [ "$INPUT_HOOK_BUILD_AFTER" ]; then
