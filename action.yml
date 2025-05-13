@@ -19,9 +19,9 @@ inputs:
     required: false
     default: "deploy"
   registry:
-    description: "GCP Registry (e.g. 'eu.gcr.io')"
+    description: "GCP Artifact Registry (e.g. 'docker')"
     required: false
-    default: eu.gcr.io
+    default: docker
   region:
     description: "GCP Region"
     required: false
@@ -87,4 +87,4 @@ outputs:
 
 runs:
   using: "docker"
-  image: "docker://ghcr.io/schliflo/action-cloud-run:2.5.0"
+  image: "docker://ghcr.io/schliflo/action-cloud-run:3.0.0"

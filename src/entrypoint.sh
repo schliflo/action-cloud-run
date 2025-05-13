@@ -29,7 +29,7 @@ fi
 
 BRANCH_SAFE=$(echo $BRANCH | tr '[:upper:]' '[:lower:]' | sed 's/[_\/#]/-/g')
 REPO=$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')
-GCR_IMAGE_NAME=${INPUT_REGISTRY}/${INPUT_PROJECT}/${REPO}${IMAGE_POSTFIX}
+GCR_IMAGE_NAME=${INPUT_REGION}-docker.pkg.dev/${INPUT_PROJECT}/${INPUT_REGISTRY}/${REPO}${IMAGE_POSTFIX}
 SERVICE_NAME=$(echo "${INPUT_SERVICE_NAME}--${BRANCH_SAFE}")
 
 if [ "$INPUT_HOOK_VARS_AFTER" ]; then

@@ -23,7 +23,7 @@ In your actions workflow, somewhere after the checkout step insert this:
 
 ```yaml
 - name: "Cloud Run: Deploy Service"
-  uses: schliflo/action-cloud-run@2.5.0
+  uses: schliflo/action-cloud-run@3.0.0
   env:
     # if set github deployments will be used
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -34,7 +34,7 @@ In your actions workflow, somewhere after the checkout step insert this:
     key: ${{ secrets.GCP_CLOUD_RUN_SERVICE_KEY }}
     # optional settings
     action: 'deploy'
-    registry: eu.gcr.io
+    registry: docker
     region: europe-west1
     platform: managed
     working_directory: .
@@ -66,7 +66,7 @@ You can also delete the service after branch deletion:
 
 ```yaml
 - name: "Cloud Run: Delete Service"
-  uses: schliflo/action-cloud-run@2.5.0
+  uses: schliflo/action-cloud-run@3.0.0
   env: 
     # if set github deployments will be used
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -99,7 +99,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: "Cloud Run: Deploy Service"
-        uses: schliflo/action-cloud-run@2.5.0
+        uses: schliflo/action-cloud-run@3.0.0
         with:
           project: ${{ secrets.GCP_PROJECT }}
           service_name: your-service-name
@@ -124,7 +124,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: "Cloud Run: Delete Service"
-        uses: schliflo/action-cloud-run@2.5.0
+        uses: schliflo/action-cloud-run@3.0.0
         with:
           project: ${{ secrets.GCP_PROJECT }}
           service_name: your-service-name
