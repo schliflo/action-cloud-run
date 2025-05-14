@@ -83,7 +83,7 @@ DEPLOY_ACTION="status_progress"
 . /github-deployment.sh
 
 echo -e "\nConfigure docker..."
-gcloud auth configure-docker --quiet
+gcloud auth configure-docker ${INPUT_REGION}-docker.pkg.dev --quiet
 
 if [ "$INPUT_HOOK_SETUP_AFTER" ]; then
   sh $INPUT_HOOK_SETUP_AFTER
